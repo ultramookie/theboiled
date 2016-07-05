@@ -1,0 +1,14 @@
+{
+  "output":           "/var/www/html",
+  "base_url":         "http://theboiled.com",
+  "url_location":     "/",
+  "header_file":      "/tmp/in/header.jinja",
+  "footer_file":      "/tmp/in/footer.jinja",
+  "css_file":         "/tmp/in/style.css",
+  "site_name":        "The Boiled",
+  "meta_keywords":    "movies,films,steve,mookie,kong",
+  "author":           "steve mookie kong",
+  "meta_description": "Mookie's random film musings.",
+  "language":         "en",
+  "feed_entries":     "10"
+}
