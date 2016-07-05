@@ -44,21 +44,6 @@ def get_meta_data(entry_json):
   else:
     print '%s.md has no associated metadata file' % base_filename
 
-# Make the date
-def get_date(metadata):
-  date = '-'.join(metadata[0:3])
-  return date
-
-# Make the year
-def get_year(metadata):
-  year = int(metadata[0])
-  return year
-
-# Make the title
-def get_title(metadata):
-  title = ' '.join(metadata[3:])
-  return title
-
 # Given the jinja for header or footer, render it to html
 def render_jinja(incoming_template,metadata,config):
   title = metadata['display_title']
