@@ -28,6 +28,11 @@ def read_body(entry_file):
   html = markdown.markdown(mdfile)
   return html
 
+# What am I trying to translate?
+def read_body_raw(entry_file):
+  file = open(entry_file).readlines()
+  return file[5]
+  
 # Where is the stuff?
 def get_input_dir():
   parser = optparse.OptionParser()
@@ -45,12 +50,11 @@ def get_meta_data(entry_json):
     print '%s.md has no associated metadata file' % base_filename
 
 # Given the jinja for header or footer, render it to html
-def render_jinja(incoming_template,metadata,config,html_title):
+def render_jinja(incoming_template,metadata,config,html_title,meta_description):
   title = metadata['display_title']
   year = metadata['year']
   site_name = config['site_name']
   meta_keywords = config['meta_keywords']
-  meta_description = config['meta_description']
   language = config['language']
   author = config['author']
   base_url = config['base_url']
@@ -104,9 +108,11 @@ def process_entries(input_dir,config):
     first_letter = sort_title[0].lower()
     processed_dir = '%s/%s' % (input_dir,first_letter)
     path,filename = os.path.split(base_filename)
-    header_html = render_jinja(header_template,metadata,config,html_title)
-    footer_html = render_jinja(footer_template,metadata,config,'')
     body_html = read_body(entry_file)
+    body_raw = read_body_raw(entry_file)
+    meta_description = "%s..." % (body_raw[:155])
+    header_html = render_jinja(header_template,metadata,config,html_title,meta_description)
+    footer_html = render_jinja(footer_template,metadata,config,'','')
     html_doc = header_html + body_html + footer_html
     output_dir = '%s/%s' % (config['output'],first_letter)
     make_dir(processed_dir)
@@ -132,8 +138,8 @@ def create_index_page(input_dir,config):
   output_dir = config['output']
   header_template = open(config['header_file']).read()
   footer_template = open(config['footer_file']).read()
-  header_html = render_jinja(header_template,metadata,config,html_title)
-  footer_html = render_jinja(footer_template,metadata,config,'')
+  header_html = render_jinja(header_template,metadata,config,html_title,meta_description)
+  footer_html = render_jinja(footer_template,metadata,config,'','')
   entry_files = get_completed_entries(input_dir)
   index_filecontents = header_html 
   for entry_file in entry_files:
