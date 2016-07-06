@@ -45,7 +45,7 @@ def get_meta_data(entry_json):
     print '%s.md has no associated metadata file' % base_filename
 
 # Given the jinja for header or footer, render it to html
-def render_jinja(incoming_template,metadata,config):
+def render_jinja(incoming_template,metadata,config,html_title):
   title = metadata['display_title']
   year = metadata['year']
   site_name = config['site_name']
@@ -57,8 +57,7 @@ def render_jinja(incoming_template,metadata,config):
   url_location = config['url_location']
   template = jinja2.Template(incoming_template)
   rendered_jinja = template.render(
-    title=title,
-    year=year,
+    html_title=html_title,
     site_name=site_name,
     meta_keywords=meta_keywords,
     meta_description=meta_description,
@@ -96,12 +95,17 @@ def process_entries(input_dir,config):
     base_filename = os.path.splitext(entry_file)[0]
     entry_json = base_filename + '.json'
     metadata = get_meta_data(entry_json)
+    display_title = metadata['display_title']
     sort_title = metadata['sort_title']
+    year = metadata['year']
+    site_name = config['site_name']
+    author = config['author']
+    html_title = "%s (%s) :: %s :: %s" % (display_title, year, site_name, author)
     first_letter = sort_title[0].lower()
     processed_dir = '%s/%s' % (input_dir,first_letter)
     path,filename = os.path.split(base_filename)
-    header_html = render_jinja(header_template,metadata,config)
-    footer_html = render_jinja(footer_template,metadata,config)
+    header_html = render_jinja(header_template,metadata,config,html_title)
+    footer_html = render_jinja(footer_template,metadata,config,'')
     body_html = read_body(entry_file)
     html_doc = header_html + body_html + footer_html
     output_dir = '%s/%s' % (config['output'],first_letter)
@@ -120,13 +124,16 @@ def process_entries(input_dir,config):
 def create_index_page(input_dir,config):
   index_filename = config['output'] + '/index.html'
   prev_letter = ''
+  site_name = config['site_name']
   author = config['author']
+  meta_description = config['meta_description']
   metadata = { "display_title": config['site_name'], "sort_title": config['site_name'], "year": "" }
+  html_title = "%s :: %s :: %s" % (site_name,meta_description,author)
   output_dir = config['output']
   header_template = open(config['header_file']).read()
   footer_template = open(config['footer_file']).read()
-  header_html = render_jinja(header_template,metadata,config)
-  footer_html = render_jinja(footer_template,metadata,config)
+  header_html = render_jinja(header_template,metadata,config,html_title)
+  footer_html = render_jinja(footer_template,metadata,config,'')
   entry_files = get_completed_entries(input_dir)
   index_filecontents = header_html 
   for entry_file in entry_files:
