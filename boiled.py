@@ -133,6 +133,7 @@ def create_index_page(input_dir,config):
   site_name = config['site_name']
   author = config['author']
   meta_description = config['meta_description']
+  base_url = config['base_url']
   metadata = { "display_title": config['site_name'], "sort_title": config['site_name'], "year": "" }
   html_title = "%s :: %s :: %s" % (site_name,meta_description,author)
   output_dir = config['output']
@@ -155,7 +156,7 @@ def create_index_page(input_dir,config):
     if cur_letter != prev_letter:
       index_filecontents = '%s <h1>%s</h1>' % (index_filecontents,cur_letter)
       prev_letter = cur_letter
-    index_filecontents = '%s <a href="%s">%s</a> (%s) <br />' % (index_filecontents,html_filename,title,year)
+    index_filecontents = '%s <a href="%s/%s">%s</a> (%s) <br />' % (index_filecontents,base_url,html_filename,title,year)
   index_filecontents = index_filecontents + footer_html
   index_file = open(index_filename,'w')
   index_file.write(index_filecontents)
